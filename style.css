@@ -217,4 +217,33 @@ footer {
     width: 70px;
     height: 70px;
   }
+}
+.cat-scratch {
+  position: absolute;
+  right: 10px;
+  bottom: 100px;
+  width: 60px;
+  height: 40px;
+  pointer-events: none;
+  z-index: 1200;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  opacity: 0;
+  animation: none;
+}
+.cat-scratch.active {
+  display: flex;
+  opacity: 1;
+  animation: catScratchAnim 0.5s cubic-bezier(.7,-0.2,.7,1.5);
+}
+.cat-scratch-svg {
+  width: 60px;
+  height: 40px;
+  display: block;
+}
+@keyframes catScratchAnim {
+  0% { opacity: 0; transform: scale(0.7) translateY(20px); }
+  60% { opacity: 1; transform: scale(1.1) translateY(-5px); }
+  100% { opacity: 0; transform: scale(1) translateY(-10px); }
 } 

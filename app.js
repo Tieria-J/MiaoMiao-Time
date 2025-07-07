@@ -120,6 +120,18 @@ const catMouth = document.getElementById('cat-mouth');
 const catSvg = document.getElementById('cat-svg');
 const catMenu = document.getElementById('cat-menu');
 const catWidget = document.getElementById('cat-widget');
+const catScratch = document.getElementById('cat-scratch');
+
+// 猫抓SVG内容
+const scratchSVG = `
+<svg class="cat-scratch-svg" viewBox="0 0 60 40">
+  <path d="M10 10 Q15 25 10 35" stroke="#ffb6b9" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <path d="M25 8 Q30 23 25 33" stroke="#ffb6b9" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <path d="M40 10 Q45 25 40 35" stroke="#ffb6b9" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <path d="M53 13 Q55 28 50 36" stroke="#ffb6b9" stroke-width="3" fill="none" stroke-linecap="round"/>
+</svg>
+`;
+catScratch.innerHTML = scratchSVG;
 
 function setCatFace(state) {
   // 状态: idle(默认), focus(专注), rest(休息), celebrate(庆祝), happy(添加任务), clap(完成任务)
@@ -157,19 +169,26 @@ function setCatFace(state) {
   }
 }
 
-catSvg.addEventListener('mouseenter', () => {
-  setCatFace('happy');
-});
-catSvg.addEventListener('mouseleave', () => {
-  setCatFace('idle');
-});
+// 点击SVG小猫弹出菜单、切换表情、猫抓特效
 catSvg.addEventListener('click', (e) => {
   e.stopPropagation();
+  // 猫抓特效
+  catScratch.classList.remove('active');
+  void catScratch.offsetWidth; // 触发重绘
+  catScratch.classList.add('active');
+  // 菜单弹出
   if (catMenu.style.display === 'none') {
     catMenu.style.display = 'block';
   } else {
     catMenu.style.display = 'none';
   }
+  // 表情彩蛋
+  setCatFace('celebrate');
+  setTimeout(() => setCatFace('idle'), 1200);
+});
+// 猫抓特效动画结束后隐藏
+catScratch.addEventListener('animationend', () => {
+  catScratch.classList.remove('active');
 });
 
 // 点击菜单项切换专注时长
