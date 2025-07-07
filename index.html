@@ -54,7 +54,24 @@
   </footer>
   <div id="cat-widget">
     <!-- SVG猫咪互动组件 -->
-    <svg id="cat-svg" width="90" height="90" viewBox="0 0 90 90" style="position:fixed;right:24px;bottom:24px;z-index:1000;cursor:pointer;"></svg>
+    <svg id="cat-svg" width="90" height="90" viewBox="0 0 90 90" style="position:fixed;right:24px;bottom:24px;z-index:1000;cursor:pointer;">
+      <!-- 新猫咪头像：大脸+耳朵+腮红+可控表情 -->
+      <ellipse id="cat-face" cx="45" cy="50" rx="28" ry="24" fill="#fff" stroke="#ffb6b9" stroke-width="2"/>
+      <!-- 耳朵 -->
+      <polygon id="cat-ear-left" points="20,38 32,18 38,44" fill="#fff" stroke="#ffb6b9" stroke-width="2"/>
+      <polygon id="cat-ear-right" points="70,38 58,18 52,44" fill="#fff" stroke="#ffb6b9" stroke-width="2"/>
+      <!-- 眼睛 -->
+      <ellipse id="cat-eye-left" cx="35" cy="52" rx="3.2" ry="5" fill="#333"/>
+      <ellipse id="cat-eye-right" cx="55" cy="52" rx="3.2" ry="5" fill="#333"/>
+      <!-- 眼睛高光 -->
+      <ellipse cx="36" cy="50" rx="0.8" ry="1.2" fill="#fff"/>
+      <ellipse cx="56" cy="50" rx="0.8" ry="1.2" fill="#fff"/>
+      <!-- 腮红 -->
+      <ellipse id="cat-blush-left" cx="32" cy="60" rx="3.5" ry="1.5" fill="#ffb6b9" fill-opacity="0.5"/>
+      <ellipse id="cat-blush-right" cx="58" cy="60" rx="3.5" ry="1.5" fill="#ffb6b9" fill-opacity="0.5"/>
+      <!-- 嘴巴（可变） -->
+      <path id="cat-mouth" d="M41 62 Q45 66 49 62" stroke="#ffb6b9" stroke-width="2" fill="none"/>
+    </svg>
     <div id="cat-scratch" class="cat-scratch" style="display:none;"></div>
     <div id="cat-menu" class="cat-menu" style="display:none;">
       <div class="cat-menu-title">选择专注时长</div>

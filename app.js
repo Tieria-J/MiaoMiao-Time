@@ -115,62 +115,16 @@ resetBtn.onclick = resetPomodoro;
 updatePomodoroDisplay();
 
 // 猫咪互动动画
-// 检查页面是否有小猫相关元素，没有则动态插入SVG小猫和相关控件
-function ensureCatElements() {
-  // 检查小猫SVG容器
-  let catWidget = document.getElementById('cat-widget');
-  if (!catWidget) {
-    catWidget = document.createElement('div');
-    catWidget.id = 'cat-widget';
-    catWidget.style.position = 'fixed';
-    catWidget.style.right = '24px';
-    catWidget.style.bottom = '24px';
-    catWidget.style.zIndex = '1000';
-    document.body.appendChild(catWidget);
-  }
-
-  // 检查小猫SVG
-  let catSvg = document.getElementById('cat-svg');
-  if (!catSvg) {
-    catWidget.innerHTML = `
-      <svg id="cat-svg" width="80" height="80" viewBox="0 0 80 80" style="cursor:pointer;">
-        <ellipse id="cat-face" cx="40" cy="40" rx="30" ry="28" fill="#fff" stroke="#ffb6b9" stroke-width="3"/>
-        <ellipse id="cat-mouth" cx="40" cy="55" rx="4" ry="2" fill="#ffb6b9"/>
-        <polygon points="18,18 28,8 32,26" fill="#fff" stroke="#ffb6b9" stroke-width="2"/>
-        <polygon points="62,18 52,8 48,26" fill="#fff" stroke="#ffb6b9" stroke-width="2"/>
-        <ellipse cx="30" cy="40" rx="4" ry="6" fill="#333"/>
-        <ellipse cx="50" cy="40" rx="4" ry="6" fill="#333"/>
-        <ellipse cx="32" cy="42" rx="1" ry="2" fill="#fff"/>
-        <ellipse cx="52" cy="42" rx="1" ry="2" fill="#fff"/>
-      </svg>
-      <div id="cat-scratch" style="position:absolute;left:0;top:0;width:80px;height:80px;pointer-events:none;"></div>
-      <div id="cat-menu" style="display:none;position:absolute;bottom:90px;right:0;background:#fff8f0;border-radius:1em;box-shadow:0 2px 12px #ffb6b955;padding:0.5em 1em;">
-        <div class="cat-menu-item" data-minutes="25" style="padding:0.3em 0;cursor:pointer;">专注25分钟</div>
-        <div class="cat-menu-item" data-minutes="50" style="padding:0.3em 0;cursor:pointer;">专注50分钟</div>
-        <div class="cat-menu-item" data-minutes="5" style="padding:0.3em 0;cursor:pointer;">休息5分钟</div>
-      </div>
-    `;
-  }
-
-  // 返回所有需要的元素
-  return {
-    catFace: document.getElementById('cat-face'),
-    catMouth: document.getElementById('cat-mouth'),
-    catSvg: document.getElementById('cat-svg'),
-    catMenu: document.getElementById('cat-menu'),
-    catWidget: catWidget,
-    catScratch: document.getElementById('cat-scratch')
-  };
-}
-
-const {
-  catFace,
-  catMouth,
-  catSvg,
-  catMenu,
-  catWidget,
-  catScratch
-} = ensureCatElements();
+// 新猫咪SVG元素
+const catSvg = document.getElementById('cat-svg');
+const catFace = document.getElementById('cat-face');
+const catMouth = document.getElementById('cat-mouth');
+const catEyeLeft = document.getElementById('cat-eye-left');
+const catEyeRight = document.getElementById('cat-eye-right');
+const catBlushLeft = document.getElementById('cat-blush-left');
+const catBlushRight = document.getElementById('cat-blush-right');
+const catMenu = document.getElementById('cat-menu');
+const catScratch = document.getElementById('cat-scratch');
 
 // 猫抓SVG内容
 const scratchSVG = `
@@ -183,42 +137,53 @@ const scratchSVG = `
 `;
 catScratch.innerHTML = scratchSVG;
 
-// 标记菜单是否打开
 let catMenuOpen = false;
 
 function setCatFace(state) {
   // 状态: idle(默认), focus(专注), rest(休息), celebrate(庆祝), happy(添加任务), clap(完成任务)
-  if (!catFace || !catMouth) return;
+  if (!catFace || !catMouth || !catEyeLeft || !catEyeRight) return;
   switch(state) {
-    case 'focus':
-      catFace.setAttribute('fill', '#fff');
-      catMouth.setAttribute('rx', '2');
-      catMouth.setAttribute('ry', '1');
+    case 'focus': // 专注
+      catMouth.setAttribute('d', 'M43 62 Q45 64 47 62'); // 微笑
+      catEyeLeft.setAttribute('ry', '5');
+      catEyeRight.setAttribute('ry', '5');
+      catBlushLeft.setAttribute('fill-opacity', '0.5');
+      catBlushRight.setAttribute('fill-opacity', '0.5');
       break;
-    case 'rest':
-      catFace.setAttribute('fill', '#fff8f0');
-      catMouth.setAttribute('rx', '4');
-      catMouth.setAttribute('ry', '2');
+    case 'rest': // 休息
+      catMouth.setAttribute('d', 'M43 64 Q45 62 47 64'); // 嘟嘴
+      catEyeLeft.setAttribute('ry', '4');
+      catEyeRight.setAttribute('ry', '4');
+      catBlushLeft.setAttribute('fill-opacity', '0.3');
+      catBlushRight.setAttribute('fill-opacity', '0.3');
       break;
-    case 'celebrate':
-      catFace.setAttribute('fill', '#ffe066');
-      catMouth.setAttribute('rx', '5');
-      catMouth.setAttribute('ry', '3');
+    case 'celebrate': // 庆祝
+      catMouth.setAttribute('d', 'M41 62 Q45 68 49 62'); // 大笑
+      catEyeLeft.setAttribute('ry', '3');
+      catEyeRight.setAttribute('ry', '3');
+      catBlushLeft.setAttribute('fill-opacity', '0.8');
+      catBlushRight.setAttribute('fill-opacity', '0.8');
       break;
-    case 'happy':
-      catFace.setAttribute('fill', '#fff');
-      catMouth.setAttribute('rx', '4');
-      catMouth.setAttribute('ry', '2');
+    case 'happy': // 添加任务
+      catMouth.setAttribute('d', 'M43 62 Q45 66 47 62'); // 微笑
+      catEyeLeft.setAttribute('ry', '5');
+      catEyeRight.setAttribute('ry', '5');
+      catBlushLeft.setAttribute('fill-opacity', '0.7');
+      catBlushRight.setAttribute('fill-opacity', '0.7');
       break;
-    case 'clap':
-      catFace.setAttribute('fill', '#fff');
-      catMouth.setAttribute('rx', '3');
-      catMouth.setAttribute('ry', '1.5');
+    case 'clap': // 完成任务
+      catMouth.setAttribute('d', 'M43 62 Q45 66 47 62'); // 微笑
+      catEyeLeft.setAttribute('ry', '2.5');
+      catEyeRight.setAttribute('ry', '2.5');
+      catBlushLeft.setAttribute('fill-opacity', '1');
+      catBlushRight.setAttribute('fill-opacity', '1');
       break;
-    default:
-      catFace.setAttribute('fill', '#fff');
-      catMouth.setAttribute('rx', '4');
-      catMouth.setAttribute('ry', '2');
+    default: // idle
+      catMouth.setAttribute('d', 'M41 62 Q45 66 49 62'); // 默认微笑
+      catEyeLeft.setAttribute('ry', '5');
+      catEyeRight.setAttribute('ry', '5');
+      catBlushLeft.setAttribute('fill-opacity', '0.5');
+      catBlushRight.setAttribute('fill-opacity', '0.5');
   }
 }
 
@@ -252,15 +217,17 @@ catMenu.addEventListener('click', (e) => {
   e.stopPropagation(); // 阻止冒泡，防止window点击事件关闭菜单
   if (e.target.classList.contains('cat-menu-item')) {
     const min = parseInt(e.target.getAttribute('data-minutes'));
-    workDuration = min * 60;
-    if (isWork) {
-      timeLeft = workDuration;
-      updatePomodoroDisplay();
+    if (!isNaN(min)) {
+      workDuration = min * 60;
+      if (isWork) {
+        timeLeft = workDuration;
+        updatePomodoroDisplay();
+      }
+      catMenu.style.display = 'none';
+      catMenuOpen = false;
+      setCatFace('celebrate');
+      setTimeout(() => setCatFace('idle'), 1200);
     }
-    catMenu.style.display = 'none';
-    catMenuOpen = false;
-    setCatFace('celebrate');
-    setTimeout(() => setCatFace('idle'), 1200);
   }
 });
 
