@@ -183,6 +183,9 @@ const scratchSVG = `
 `;
 catScratch.innerHTML = scratchSVG;
 
+// 标记菜单是否打开
+let catMenuOpen = false;
+
 function setCatFace(state) {
   // 状态: idle(默认), focus(专注), rest(休息), celebrate(庆祝), happy(添加任务), clap(完成任务)
   if (!catFace || !catMouth) return;
@@ -220,97 +223,53 @@ function setCatFace(state) {
 }
 
 // 点击SVG小猫弹出菜单、切换表情、猫抓特效
-if (catSvg) {
-  catSvg.addEventListener('click', (e) => {
-    e.stopPropagation();
-    // 猫抓特效
-    if (catScratch) {
-      catScratch.classList.remove('active');
-      void catScratch.offsetWidth; // 触发重绘
-      catScratch.classList.add('active');
-    }
-    // 菜单弹出
-    if (catMenu) {
-      if (catMenu.style.display === 'none' || catMenu.style.display === '') {
-        catMenu.style.display = 'block';
-      } else {
-        catMenu.style.display = 'none';
-      }
-    }
-    // 表情彩蛋
-    setCatFace('celebrate');
-    setTimeout(() => setCatFace('idle'), 1200);
-  });
-}
+catSvg.addEventListener('click', (e) => {
+  e.stopPropagation();
+  // 猫抓特效
+  catScratch.classList.remove('active');
+  void catScratch.offsetWidth; // 触发重绘
+  catScratch.classList.add('active');
+  // 菜单弹出
+  if (!catMenuOpen) {
+    catMenu.style.display = 'block';
+    catMenuOpen = true;
+  } else {
+    catMenu.style.display = 'none';
+    catMenuOpen = false;
+  }
+  // 表情彩蛋
+  setCatFace('celebrate');
+  setTimeout(() => setCatFace('idle'), 1200);
+});
 
 // 猫抓特效动画结束后隐藏
-if (catScratch) {
-  catScratch.addEventListener('animationend', () => {
-    catScratch.classList.remove('active');
-  });
-}
-
-// 点击菜单项切换专注时长
-if (catMenu) {
-  catMenu.addEventListener('click', (e) => {
-    if (e.target.classList.contains('cat-menu-item')) {
-      const min = parseInt(e.target.getAttribute('data-minutes'));
-      if (!isNaN(min)) {
-        workDuration = min * 60;
-        if (typeof isWork !== 'undefined' && isWork) {
-          timeLeft = workDuration;
-          updatePomodoroDisplay();
-        }
-        catMenu.style.display = 'none';
-        setCatFace('celebrate');
-        setTimeout(() => setCatFace('idle'), 1200);
-      }
-    }
-    e.stopPropagation();
-  });
-}
-
-// 点击其他区域关闭菜单
-window.addEventListener('click', (e) => {
-  if (catMenu && catMenu.style.display === 'block') {
-    catMenu.style.display = 'none';
-  }
+catScratch.addEventListener('animationend', () => {
+  catScratch.classList.remove('active');
 });
 
-// 防止菜单点击冒泡到window
-if (catMenu) {
-  catMenu.addEventListener('click', (e) => {
-    e.stopPropagation();
-  });
-}
-
-// 任务操作时猫咪表情联动
-function catHappyOnAdd() {
-  setCatFace('happy');
-  setTimeout(() => setCatFace('idle'), 1200);
-}
-function catClapOnComplete() {
-  setCatFace('clap');
-  setTimeout(() => setCatFace('idle'), 1200);
-} 
+// 点击菜单项切换专注时长
+catMenu.addEventListener('click', (e) => {
+  e.stopPropagation(); // 阻止冒泡，防止window点击事件关闭菜单
+  if (e.target.classList.contains('cat-menu-item')) {
+    const min = parseInt(e.target.getAttribute('data-minutes'));
+    workDuration = min * 60;
+    if (isWork) {
+      timeLeft = workDuration;
+      updatePomodoroDisplay();
     }
     catMenu.style.display = 'none';
+    catMenuOpen = false;
     setCatFace('celebrate');
     setTimeout(() => setCatFace('idle'), 1200);
   }
-  e.stopPropagation();
 });
 
 // 点击其他区域关闭菜单
-window.addEventListener('click', (e) => {
-  if (catMenu.style.display === 'block') {
+window.addEventListener('click', () => {
+  if (catMenuOpen) {
     catMenu.style.display = 'none';
+    catMenuOpen = false;
   }
-});
-
-// 防止菜单点击冒泡到window
-catMenu.addEventListener('click', (e) => {
-  e.stopPropagation();
 });
 
 // 任务操作时猫咪表情联动
