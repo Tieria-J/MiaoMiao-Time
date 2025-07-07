@@ -118,6 +118,8 @@ updatePomodoroDisplay();
 const catFace = document.getElementById('cat-face');
 const catMouth = document.getElementById('cat-mouth');
 const catSvg = document.getElementById('cat-svg');
+const catMenu = document.getElementById('cat-menu');
+const catWidget = document.getElementById('cat-widget');
 
 function setCatFace(state) {
   // 状态: idle(默认), focus(专注), rest(休息), celebrate(庆祝), happy(添加任务), clap(完成任务)
@@ -161,9 +163,41 @@ catSvg.addEventListener('mouseenter', () => {
 catSvg.addEventListener('mouseleave', () => {
   setCatFace('idle');
 });
-catSvg.addEventListener('click', () => {
-  setCatFace('celebrate');
-  setTimeout(() => setCatFace('idle'), 1200);
+catSvg.addEventListener('click', (e) => {
+  e.stopPropagation();
+  if (catMenu.style.display === 'none') {
+    catMenu.style.display = 'block';
+  } else {
+    catMenu.style.display = 'none';
+  }
+});
+
+// 点击菜单项切换专注时长
+catMenu.addEventListener('click', (e) => {
+  if (e.target.classList.contains('cat-menu-item')) {
+    const min = parseInt(e.target.getAttribute('data-minutes'));
+    workDuration = min * 60;
+    if (isWork) {
+      timeLeft = workDuration;
+      updatePomodoroDisplay();
+    }
+    catMenu.style.display = 'none';
+    setCatFace('celebrate');
+    setTimeout(() => setCatFace('idle'), 1200);
+  }
+  e.stopPropagation();
+});
+
+// 点击其他区域关闭菜单
+window.addEventListener('click', (e) => {
+  if (catMenu.style.display === 'block') {
+    catMenu.style.display = 'none';
+  }
+});
+
+// 防止菜单点击冒泡到window
+catMenu.addEventListener('click', (e) => {
+  e.stopPropagation();
 });
 
 // 任务操作时猫咪表情联动

@@ -152,6 +152,7 @@ footer {
   right: 24px;
   bottom: 24px;
   z-index: 1000;
+  min-width: 90px;
 }
 #cat-svg {
   box-shadow: 0 4px 16px rgba(255, 182, 185, 0.18);
@@ -161,6 +162,45 @@ footer {
 }
 #cat-svg:hover {
   transform: scale(1.08) rotate(-5deg);
+}
+.cat-menu {
+  position: absolute;
+  right: 0;
+  bottom: 110px;
+  min-width: 120px;
+  background: #fff8f0;
+  border-radius: 1.2em;
+  box-shadow: 0 4px 16px rgba(255, 182, 185, 0.18);
+  padding: 0.8em 1em 0.6em 1em;
+  z-index: 1100;
+  text-align: center;
+  animation: catMenuPop 0.18s ease;
+}
+.cat-menu-title {
+  color: #ff6f91;
+  font-size: 1em;
+  margin-bottom: 0.5em;
+  font-weight: bold;
+}
+.cat-menu-item {
+  display: block;
+  width: 100%;
+  margin: 0.3em 0;
+  background: linear-gradient(90deg, #ffb6b9 0%, #ffe066 100%);
+  color: #fff;
+  border: none;
+  border-radius: 1em;
+  padding: 0.5em 0;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.cat-menu-item:hover {
+  background: linear-gradient(90deg, #ffb627 0%, #ff6f91 100%);
+}
+@keyframes catMenuPop {
+  0% { transform: scale(0.7) translateY(20px); opacity: 0; }
+  100% { transform: scale(1) translateY(0); opacity: 1; }
 }
 @media (max-width: 600px) {
   main {
